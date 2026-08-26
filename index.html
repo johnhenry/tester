@@ -26,19 +26,19 @@
   </head>
   <body></body>
 </html>
-<h1 id="pop-quiz-formery-tester">Pop-Quiz (Formery “Tester”)</h1>
-<p><code>/js/pop-quiz@0.0.0/index.mjs</code></p>
+<h1 id="tester">Tester</h1>
+<p><code>@johnhenry/tester@0.0.0</code></p>
 <p>A context-independent testing framework inspired by <a
 href="https://github.com/substack/tape">tape</a>.</p>
 <h2 id="comparison-to-tape">Comparison to Tape</h2>
-<p>Like Tape, pop-quiz</p>
+<p>Like Tape, tester</p>
 <ul>
 <li>can be run directly using <a href="https://nodejs.org">node</a>
 without any binaries or transformations.</li>
 <li>produces output using the standard <a
 href="https://testanything.org/">Test Anything Protocol</a>.</li>
 </ul>
-<p>Unlike Tape, pop-quiz</p>
+<p>Unlike Tape, tester</p>
 <ul>
 <li>can be run directly in the browser or using <a
 href="https://nodejs.org">node</a>, <a
@@ -51,16 +51,16 @@ binaries or transformations.</li>
 <p>Tests run in same context as your application. No special executables
 needed.</p>
 <h2 id="tap-output">TAP Output</h2>
-<p>Pop-Quiz outputs to the console using a partial implementation of the
+<p>Tester outputs to the console using a partial implementation of the
 <a href="https://testanything.org/tap-specification.html">Test Anything
 Protocol</a>.</p>
 <h2 id="installation">Installation</h2>
-<p>Install via npm with <code>npm install pop-quiz</code> or import
+<p>Install via npm with <code>npm install @johnhenry/tester</code> or import
 directly from website:</p>
 <div class="sourceCode" id="cb1"><pre
-class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> quiz <span class="im">from</span> <span class="st">&quot;https://johnhenry.github.io/lib/js/pop-quiz/0.0.0/index.mjs&quot;</span><span class="op">;</span></span></code></pre></div>
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> quiz <span class="im">from</span> <span class="st">&quot;https://cdn.jsdelivr.net/npm/@johnhenry/tester@0.0.0/index.mjs&quot;</span><span class="op">;</span></span></code></pre></div>
 <h2 id="api">API</h2>
-<p>Pop-Quiz’s API consist of two manin components:</p>
+<p>Tester’s API consist of two manin components:</p>
 <ul>
 <li>The “quiz” function acts on a group of assertions.</li>
 <li>The assertions themselves, which return errors if a given condition
@@ -72,7 +72,7 @@ is not satisfied.</li>
 call this a “test”.</p>
 <p>Results of assertions are yielded from within the body of a test.</p>
 <div class="sourceCode" id="cb2"><pre
-class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> quiz <span class="im">from</span> <span class="st">&quot;pop-quiz&quot;</span><span class="op">;</span></span>
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> quiz <span class="im">from</span> <span class="st">&quot;@johnhenry/tester&quot;</span><span class="op">;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">quiz</span>(<span class="kw">function</span><span class="op">*</span> () {</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">yield</span> <span class="co">/*some assertion result*/</span><span class="op">;</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">yield</span> <span class="co">/*some other assertion result*/</span><span class="op">;</span></span>
@@ -81,7 +81,7 @@ class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb2-
 <p>The named exports are assertions.</p>
 <p>Call them within a test and yield their results.</p>
 <div class="sourceCode" id="cb3"><pre
-class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> quiz<span class="op">,</span> { ok<span class="op">,</span> notok } <span class="im">from</span> <span class="st">&quot;pop-quiz&quot;</span><span class="op">;</span></span>
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> quiz<span class="op">,</span> { ok<span class="op">,</span> notok } <span class="im">from</span> <span class="st">&quot;@johnhenry/tester&quot;</span><span class="op">;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">quiz</span>(<span class="kw">function</span><span class="op">*</span> () {</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">yield</span> <span class="fu">ok</span>(<span class="kw">true</span>)<span class="op">;</span></span>
@@ -118,7 +118,7 @@ anyting you like (“expect”, “assertions”, etc.) When <em>plan</em> is
 called with an integer, it dictates the number of expected assertions in
 a given test function.</p>
 <div class="sourceCode" id="cb4"><pre
-class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> quiz<span class="op">,</span> { ok } <span class="im">from</span> <span class="st">&quot;pop-quiz&quot;</span><span class="op">;</span></span>
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> quiz<span class="op">,</span> { ok } <span class="im">from</span> <span class="st">&quot;@johnhenry/tester&quot;</span><span class="op">;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">quiz</span>(<span class="kw">function</span><span class="op">*</span> (plan) {</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plan</span>(<span class="dv">1</span>)<span class="op">;</span></span>

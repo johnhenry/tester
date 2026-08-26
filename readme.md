@@ -1,17 +1,33 @@
-# Pop-Quiz (Formery "Tester")
+# Tester
 
-`/js/pop-quiz@0.0.0/index.mjs`
+`@johnhenry/tester@0.0.0`
 
 A context-independent testing framework inspired by [tape](https://github.com/substack/tape).
 
+## Provenance
+
+This project's original working name was **Tester**, but it was published to
+npm as **`pop-quiz`** (npm doesn't rename packages, and the unscoped `tester`
+name was already taken by an unrelated package). `pop-quiz` was published
+`0.0.0`–`0.0.7` between 2022 and 2025, then bumped to `1.0.0`/`1.0.1` in July
+2026 by a parallel publish from a vendored copy of this package inside
+`johnhenry/lib`.
+
+The GitHub repository has since been renamed from `pop-quiz` back to
+`tester`, and the package is now adopted into the `@johnhenry` npm scope as
+**`@johnhenry/tester`**, restarting its version at **`0.0.0`** per this
+scope's convention (a new address is a new era). The prior `pop-quiz`
+versions (last published: `1.0.1`) remain on npm, unscoped and undeprecated,
+for existing consumers.
+
 ## Comparison to Tape
 
-Like Tape, pop-quiz
+Like Tape, tester
 
 - can be run directly using [node](https://nodejs.org) without any binaries or transformations.
 - produces output using the standard [Test Anything Protocol](https://testanything.org/).
 
-Unlike Tape, pop-quiz
+Unlike Tape, tester
 
 - can be run directly in the browser or using [node](https://nodejs.org), [deno](https://deno.land), and browser environments
   without any binaries or transformations.
@@ -24,21 +40,21 @@ Tests run in same context as your application. No special executables needed.
 
 ## TAP Output
 
-Pop-Quiz outputs to the console using a partial implementation of the [Test Anything Protocol](https://testanything.org/tap-specification.html).
+Tester outputs to the console using a partial implementation of the [Test Anything Protocol](https://testanything.org/tap-specification.html).
 
 ## Installation
 
-Install via npm with `npm install pop-quiz`
+Install via npm with `npm install @johnhenry/tester`
 or
 import directly from website:
 
 ```javascript
-import quiz from "https://cdn.jsdelivr.net/npm/pop-quiz@0.0.7/index.mjs";
+import quiz from "https://cdn.jsdelivr.net/npm/@johnhenry/tester@0.0.0/index.mjs";
 ```
 
 ## API
 
-Pop-Quiz's API consist of two manin components:
+Tester's API consist of two manin components:
 
 - The "quiz" function acts on a group of assertions.
 - The assertions themselves, which return errors if a given condition is not satisfied.
@@ -52,7 +68,7 @@ It takes as its only argument a [possibly asynchronous] generator. We call this 
 Results of assertions are yielded from within the body of a test.
 
 ```javascript
-import quiz from "pop-quiz";
+import quiz from "@johnhenry/tester";
 quiz(function* () {
   yield /*some assertion result*/;
   yield /*some other assertion result*/;
@@ -66,7 +82,7 @@ The named exports are assertions.
 Call them within a test and yield their results.
 
 ```javascript
-import quiz, { ok, notok } from "pop-quiz";
+import quiz, { ok, notok } from "@johnhenry/tester";
 
 quiz(function* () {
   yield ok(true);
@@ -98,7 +114,7 @@ We'll call it "plan", but you can name it anyting you like ("expect", "assertion
 When _plan_ is called with an integer, it dictates the number of expected assertions in a given test function.
 
 ```javascript
-import quiz, { ok } from "pop-quiz";
+import quiz, { ok } from "@johnhenry/tester";
 
 quiz(function* (plan) {
   plan(1);
