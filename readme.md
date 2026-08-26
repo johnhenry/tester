@@ -4,6 +4,8 @@
 
 A context-independent testing framework inspired by [tape](https://github.com/substack/tape).
 
+Full documentation: [opensource.johnhenry.me/tester](https://opensource.johnhenry.me/tester/)
+
 ## Provenance
 
 This project's original working name was **Tester**, but it was published to
