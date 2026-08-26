@@ -52,6 +52,12 @@ import directly from website:
 import quiz from "https://cdn.jsdelivr.net/npm/@johnhenry/tester@0.0.0/index.mjs";
 ```
 
+## Examples
+
+Runnable, self-checking examples live in [./examples](./examples/) — basic
+assertions and TAP output, subtests, `deepdeepequal` (Map/Set/circular),
+and exit-code behavior. Run them all with `npm run examples`.
+
 ## API
 
 Tester's API consist of two manin components:
