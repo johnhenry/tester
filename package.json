@@ -1,10 +1,13 @@
 {
-  "name": "pop-quiz",
-  "version": "0.0.7",
-  "description": "Modern Javascript that works in all enviornments with zero dependencies",
+  "name": "@johnhenry/tester",
+  "version": "0.0.0",
+  "description": "A context-independent, zero-dependency TAP testing framework inspired by tape. Runs unchanged in Node, Deno, and the browser.",
   "main": "./index.mjs",
-  "homepage": "https://github.com/johnhenry/pop-quiz",
+  "homepage": "https://opensource.johnhenry.me/tester/",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "exports": {
     ".": "./index.mjs",
     "./TAPRunner": "./TAPRunner.mjs",
@@ -12,18 +15,31 @@
     "./unique": "./unique/index.mjs",
     "./testerror": "./testerror.mjs"
   },
+  "files": [
+    "index.mjs",
+    "TAPRunner.mjs",
+    "assertions",
+    "unique",
+    "testerror.mjs"
+  ],
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "test": "node popquiz.test.mjs"
+    "test": "node tester.test.mjs"
   },
   "keywords": [
     "test",
     "testing",
     "tape",
-    "TAP"
+    "TAP",
+    "assertions",
+    "zero-dependency"
   ],
-  "author": "john henry",
-  "license": "ISC"
+  "author": "John Henry",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnhenry/tester.git"
+  }
 }
