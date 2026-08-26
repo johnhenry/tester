@@ -1,6 +1,8 @@
-// Basic assertions and the TAP output they produce.
+// Assertions return their results — they never throw — and the test yields
+// them, so one failing assertion never aborts the rest. This shows the core
+// assertions and the TAP output they produce.
 //
-// Run: node examples/01-basic-assertions.mjs
+// Run: node examples/01-assertions-return-results-never-throw.mjs
 //
 // A test is a generator function that yields assertion results. `tester`
 // runs it and prints TAP: a `TAP version 13` header, the title, one
