@@ -26,7 +26,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "node tester.test.mjs"
+    "test": "node tester.test.mjs",
+    "examples": "for f in examples/*.mjs; do echo \"== $f\"; node \"$f\" || exit 1; done"
   },
   "keywords": [
     "test",

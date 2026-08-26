@@ -45,6 +45,24 @@ const deepEqual = (a, b) => {
   return a !== a && b !== b;
 };
 export const DefaultMessage = "should be deep equal";
+/**
+ * Assert deep structural equality of plain values: primitives, arrays,
+ * plain objects (own enumerable string keys), RegExp, and objects with a
+ * custom `valueOf`/`toString` (e.g. Date). Two NaNs are equal.
+ *
+ * Known blind spots — use `deepdeepequal` when they matter:
+ * - Map/Set contents are invisible (neither has own enumerable string
+ *   keys), so two same-constructor Maps or Sets with DIFFERENT contents
+ *   compare as equal here.
+ * - Circular references recurse until the stack overflows.
+ *
+ * @param {*} actual - Value under test.
+ * @param {*} expected - Value it must deeply equal.
+ * @param {string} [message="should be deep equal"] - Reported on pass or fail.
+ * @param {string} [operator="deepequal"] - Operator name in TAP diagnostics.
+ * @returns {string|TestError} `message` on pass; a TestError (with
+ *   JSON-stringified actual/expected) on failure.
+ */
 export default (
   actual,
   expected,

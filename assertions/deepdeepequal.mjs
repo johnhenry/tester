@@ -91,6 +91,21 @@ const safeStringify = (value) => {
 };
 
 export const DefaultMessage = "should be deeply-deeply equal";
+/**
+ * Assert deep structural equality including everything `deepequal` covers,
+ * plus:
+ * - Map contents (same size, same keys by `has`, values compared deeply).
+ * - Set contents (same size, order-insensitive deep membership).
+ * - Circular references: a cycle that lines up on both sides is equal
+ *   instead of a stack overflow.
+ *
+ * @param {*} actual - Value under test.
+ * @param {*} expected - Value it must deeply equal.
+ * @param {string} [message="should be deeply-deeply equal"] - Reported on pass or fail.
+ * @param {string} [operator="deepdeepequal"] - Operator name in TAP diagnostics.
+ * @returns {string|TestError} `message` on pass; a TestError (with
+ *   Map/Set/circular-safe stringified actual/expected) on failure.
+ */
 export default (
   actual,
   expected,
