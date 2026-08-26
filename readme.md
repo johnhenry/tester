@@ -111,7 +111,7 @@ Besides ok and notok, a number of assertions are included:
 - pass -- test ALWAYS PASSES
 - fail -- test ALWAYS FAILS
 - subtestpass -- test passes if and only if the given argument is a test in which ALL THE ASSERTIONS PASS.
-- subtestfail -- test passes if and only if the given argument is a test in which AT LEAST ONE ASSERTION FAILS.
+- subtestfail -- test passes if and only if the given argument is a test in which EVERY ASSERTION FAILS.
 - throws -- test passes if and only if the given function THROWS AN ERROR when called
 - doesnotthrow -- test passes if and only if the given function DOES NOT THROW AN ERROR when called
 
