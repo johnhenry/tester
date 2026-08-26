@@ -2,6 +2,27 @@ const TAP_VERSION = 13;
 import TestError from "./testerror.mjs";
 
 /**
+ * Escape text so it's safe to interpolate into a single TAP result/comment
+ * line: a raw, unescaped `#` on a TAP line starts a directive (e.g.
+ * `# SKIP ...`, `# TODO ...`), so a spec-compliant parser reading a message
+ * like `"# SKIP not really"` would record that test as skipped rather than
+ * passed/failed — silent semantic corruption. Embedded newlines are also
+ * escaped so a multi-line title/message can't produce orphan physical lines
+ * that a TAP parser would misattribute to the wrong test point.
+ *
+ * Backslashes are escaped first so the `\#`/`\n` escapes introduced here
+ * can't themselves be misread as pre-existing escapes in the input.
+ * @param {*} text - Value to escape (coerced to a string).
+ * @returns {string}
+ */
+export const escapeTapText = function (text) {
+  return String(text)
+    .replace(/\\/g, "\\\\")
+    .replace(/#/g, "\\#")
+    .replace(/\r\n|\r|\n/g, "\\n");
+};
+
+/**
  * Format a TAP plan line, e.g. `1..20`.
  * @param {number} num - Number of assertions.
  * @returns {string}
@@ -17,7 +38,7 @@ export const TAPResultRange = function (num) {
  * @returns {string}
  */
 export const TAPResultTitle = function (title) {
-  return `# ${title}`;
+  return `# ${escapeTapText(title)}`;
 };
 /**
  * Format a failing result as a `not ok N - message` line followed by an
@@ -29,10 +50,10 @@ export const TAPResultTitle = function (title) {
 export const TAPResultFail = function (output, index) {
   const { message } = output;
   const result = [];
-  result.push(`not ok ${index} - ${message}`);
+  result.push(`not ok ${index} - ${escapeTapText(message)}`);
   result.push(`  ---`);
   for (const [key, value] of output) {
-    result.push(`    ${key}: ${value}`);
+    result.push(`    ${escapeTapText(key)}: ${escapeTapText(value)}`);
   }
   result.push(`  ...`);
   return result.join("\n");
@@ -45,7 +66,7 @@ export const TAPResultFail = function (output, index) {
  * @returns {string}
  */
 export const TAPResultPass = function (output, index) {
-  return `ok ${index} - ${output}`;
+  return `ok ${index} - ${escapeTapText(output)}`;
 };
 
 /**
@@ -163,6 +184,22 @@ export const run = async function* (
  * @returns {Promise<boolean>} `true` when no assertion failed. On failure,
  *   sets `process.exitCode = 1` where `process` exists (see comment below).
  */
+// `print` awaits between every line it writes (via the `for await` below),
+// which yields to the microtask queue on each iteration. If two `print`
+// calls are in flight at once (e.g. two `tester()` calls racing, as happens
+// when sibling ES modules each `await tester(...)` at their top level — see
+// tester.test.mjs), those yields let their lines interleave on shared
+// stdout: multiple "TAP version 13" headers, non-monotonic `ok N` indices
+// from separate counters, and `1..N` plan lines scattered mid-stream. A
+// spec-compliant TAP consumer can't parse that.
+//
+// `printQueue` is a mutex implemented as a promise chain: each `print` call
+// awaits the previous call's completion before writing anything, so only
+// one call's lines are ever being written at a time — concurrent callers
+// are serialized into back-to-back, internally well-formed blocks instead
+// of an interleaved mess.
+let printQueue = Promise.resolve();
+
 export const print = async function (
   test,
   title,
@@ -170,34 +207,48 @@ export const print = async function (
   logError = console.error,
   logVersion = true
 ) {
-  if (logVersion) {
-    log(`TAP version ${TAP_VERSION}`);
-  }
-  let failCount = 0;
-  const captureCounts = (tests, pass, fail) => {
-    failCount = fail;
-    return TAPResultCounts(tests, pass, fail);
-  };
-  for await (const output of run(
-    test,
-    title,
-    TAPResultPass,
-    TAPResultFail,
-    captureCounts,
-    TAPResultRange
-  )) {
-    if (output instanceof TestError) {
-      logError(output);
-    } else {
-      log(output);
+  const previous = printQueue;
+  let release;
+  printQueue = new Promise((resolve) => {
+    release = resolve;
+  });
+  await previous;
+  try {
+    if (logVersion) {
+      log(`TAP version ${TAP_VERSION}`);
     }
+    let failCount = 0;
+    const captureCounts = (tests, pass, fail) => {
+      failCount = fail;
+      return TAPResultCounts(tests, pass, fail);
+    };
+    // `run` yields `title` verbatim by design (see its JSDoc) so direct
+    // callers of `run` get the raw string back. `print` is what actually
+    // writes to the TAP stream, so it escapes the title here — before
+    // handing it to `run` — rather than changing `run`'s contract.
+    for await (const output of run(
+      test,
+      title ? escapeTapText(title) : title,
+      TAPResultPass,
+      TAPResultFail,
+      captureCounts,
+      TAPResultRange
+    )) {
+      if (output instanceof TestError) {
+        logError(output);
+      } else {
+        log(output);
+      }
+    }
+    // Without this, a failing TAP run still exits 0 — CI (or any script
+    // checking the exit code) would never notice a failure. `process` isn't
+    // guaranteed to exist here (this module also runs in the browser), so
+    // this only takes effect where it's available.
+    if (failCount > 0 && typeof process !== "undefined") {
+      process.exitCode = 1;
+    }
+    return failCount === 0;
+  } finally {
+    release();
   }
-  // Without this, a failing TAP run still exits 0 — CI (or any script
-  // checking the exit code) would never notice a failure. `process` isn't
-  // guaranteed to exist here (this module also runs in the browser), so
-  // this only takes effect where it's available.
-  if (failCount > 0 && typeof process !== "undefined") {
-    process.exitCode = 1;
-  }
-  return failCount === 0;
 };
