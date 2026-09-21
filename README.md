@@ -1,5 +1,9 @@
 # Tester
 
+[![npm version](https://img.shields.io/npm/v/%40johnhenry%2Ftester.svg)](https://www.npmjs.com/package/@johnhenry/tester)
+[![CI](https://github.com/johnhenry/tester/actions/workflows/test.yaml/badge.svg)](https://github.com/johnhenry/tester/actions/workflows/test.yaml)
+[![license](https://img.shields.io/npm/l/%40johnhenry%2Ftester.svg)](LICENSE)
+
 `@johnhenry/tester@0.0.0`
 
 A context-independent testing framework inspired by [tape](https://github.com/substack/tape).
@@ -31,12 +35,12 @@ Like Tape, tester
 
 Unlike Tape, tester
 
-- can be run directly in the browser or using [node](https://nodejs.org), [deno](https://deno.land), and browser environments
+- can be run directly in [node](https://nodejs.org), [deno](https://deno.land), and browser environments
   without any binaries or transformations.
 - requires no dependencies
 - uses external assertions and makes it easy to write your own.
 
-## context-agnostic
+## Context-Agnostic
 
 Tests run in same context as your application. No special executables needed.
 
@@ -62,7 +66,7 @@ and exit-code behavior. Run them all with `npm run examples`.
 
 ## API
 
-Tester's API consist of two manin components:
+Tester's API consists of two main components:
 
 - The "quiz" function acts on a group of assertions.
 - The assertions themselves, which return errors if a given condition is not satisfied.
@@ -103,7 +107,7 @@ quiz(function* () {
 Besides ok and notok, a number of assertions are included:
 
 - ok -- test passes if and only if the given argument to a test is TRUTHY.
-- notok -- test passes if and only if the given argument to a test is FALSH.
+- notok -- test passes if and only if the given argument to a test is FALSY.
 - equal -- test passes if and only if the two given arguments are THE SAME object.
 - notequal -- test passes if and only if the two given arguments are NOT THE SAME object.
 - deepequal -- test passes if and only if two objects are deeply equal.
@@ -118,7 +122,7 @@ Besides ok and notok, a number of assertions are included:
 ### plan
 
 When using the run function, the first argument passed to given generator is a function.
-We'll call it "plan", but you can name it anyting you like ("expect", "assertions", etc.)
+We'll call it "plan", but you can name it anything you like ("expect", "assertions", etc.)
 When _plan_ is called with an integer, it dictates the number of expected assertions in a given test function.
 
 ```javascript
@@ -135,7 +139,7 @@ quiz(function* (plan) {
 When creating assertions, use the examples in _./assertions_ for inspiration.
 Here are a few things to keep in mind:
 
-- Assertions are functions that test for a desired conditon.
+- Assertions are functions that test for a desired condition.
 - If the given conditions meet the desired conditions,
   - an accepted message is returned.
   - Otherwise, an instance of TestError is returned.
@@ -153,13 +157,13 @@ const assertion = (/*given conditions*/)=>{
 
 ### Conventions
 
-This library follows a specific convetion for its assertions.
+This library follows a specific convention for its assertions.
 It's recommended that you follow these conventions when creating your own assertions,
 but feel free to come up with your own.
 
 - The last item is an _operator string_, which is used for the TAP protocol and can be overridden.
 - The next-to-last item is a _default expected message_ that can also be overridden.
-- The preceeding arguments are given conditions to be tested.
+- The preceding arguments are given conditions to be tested.
 - The returned TestError is constructed using the default expected message
   along with an object detailing the difference between what's expected and what's not.
 
@@ -179,7 +183,7 @@ const assertion = (/*given conditions*/, message, operatorString)=>{
 The test error is constructed with two items:
 
 - An expected messages
-- An object who's key-value pairs are displayed as part of TAP output
+- An object whose key-value pairs are displayed as part of TAP output
 
 ## TAPRunner, print, run
 
@@ -187,5 +191,5 @@ The file "/TAPRunner.mjs" export methods "print" and "run".
 "print" functions similarly to the default export of "index.mjs" --
 both of which rely on "run" to execute underlying code.
 
-When called with as single argument (a test),
+When called with a single argument (a test),
 "run" yields only the results of the test (string or Error) without additional processing.
