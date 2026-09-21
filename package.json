@@ -6,7 +6,7 @@
   "homepage": "https://opensource.johnhenry.me/tester/",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=26.0.0"
   },
   "exports": {
     ".": "./index.mjs",
