@@ -5,24 +5,18 @@ on:
     types: [published]
   workflow_dispatch:
 
-permissions:
-  id-token: write # provenance attestation
-  contents: read
-
 concurrency:
   group: npm-publish
   cancel-in-progress: false
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          registry-url: https://registry.npmjs.org
-      - run: npm test
-      - run: node scripts/npm-publish-if-new.mjs
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    permissions:
+      contents: read
+      id-token: write # required by the reusable workflow's provenance step --
+        # see johnhenry/workflows' README for why this must be declared here too.
+    uses: johnhenry/workflows/.github/workflows/npm-publish.yml@v1
+    with:
+      node-version: "22"
+      gate-commands: npm test
+    secrets: inherit
