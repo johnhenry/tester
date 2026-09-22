@@ -4,11 +4,11 @@
 [![CI](https://github.com/johnhenry/tester/actions/workflows/test.yaml/badge.svg)](https://github.com/johnhenry/tester/actions/workflows/test.yaml)
 [![license](https://img.shields.io/npm/l/%40johnhenry%2Ftester.svg)](LICENSE)
 
+Full documentation: [opensource.johnhenry.me/tester](https://opensource.johnhenry.me/tester/)
+
 `@johnhenry/tester@0.0.0`
 
 A context-independent testing framework inspired by [tape](https://github.com/substack/tape).
-
-Full documentation: [opensource.johnhenry.me/tester](https://opensource.johnhenry.me/tester/)
 
 ## Provenance
 
@@ -134,56 +134,61 @@ quiz(function* (plan) {
 });
 ```
 
-## Creating Assertions
+## Adding a new assertion
 
-When creating assertions, use the examples in _./assertions_ for inspiration.
-Here are a few things to keep in mind:
+`deepdeepequal` is the best real worked example in this package's own
+history (see the CHANGELOG's `pop-quiz 1.0.1` entry) — the harder of the two
+cases, because unlike a one-line comparison it needs its own recursion and a
+`seen` map for circular references, on top of the shared convention every
+assertion follows.
 
-- Assertions are functions that test for a desired condition.
-- If the given conditions meet the desired conditions,
-  - an accepted message is returned.
-  - Otherwise, an instance of TestError is returned.
+Every assertion is a plain function following one small, repeatable pattern,
+so a new one does too:
 
-```javascript
-import TestError from "./testerror.mjs";
+1. **`assertions/<name>.mjs`** — the assertion itself. The last parameter is
+   an _operator string_ (used for the TAP protocol, overridable); the
+   next-to-last is a _default expected message_ (also overridable); every
+   preceding argument is a condition to test. Returns the message on pass,
+   or `new TestError(message, details)` on fail, where `details` is an
+   object whose key-value pairs are displayed as part of TAP output.
 
-const assertion = (/*given conditions*/)=>{
-  if(/*conditions are met*/){
-    return /*some message*/;
-  }
-  return new TestError(/*some message*/);
-}
-```
+   ```javascript
+   import TestError from "../testerror.mjs";
 
-### Conventions
+   export default (/*given conditions*/, message = "...", operator = "<name>") => {
+     if (/*conditions are met*/) {
+       return message;
+     }
+     return new TestError(message, /*details object*/);
+   };
+   ```
 
-This library follows a specific convention for its assertions.
-It's recommended that you follow these conventions when creating your own assertions,
-but feel free to come up with your own.
+2. **`assertions/index.mjs`** — one line: `export { default as <name> } from
+   "./<name>.mjs";`. This is the only place a new assertion needs to be
+   registered — root `index.mjs` re-exports everything from here
+   (`export * from "./assertions/index.mjs"`), so nothing else needs to know
+   a new assertion exists.
 
-- The last item is an _operator string_, which is used for the TAP protocol and can be overridden.
-- The next-to-last item is a _default expected message_ that can also be overridden.
-- The preceding arguments are given conditions to be tested.
-- The returned TestError is constructed using the default expected message
-  along with an object detailing the difference between what's expected and what's not.
+**The one part that isn't boilerplate: the condition check itself.**
+Everything above the `if` is convention; the `if` is the actual assertion
+logic. `deepdeepequal`'s is the least trivial one in this package: plain
+`deepequal`'s `Object.keys()` comparison can't see Map/Set contents (neither
+has own enumerable string keys, so two different-content Maps both compare
+as "0 keys === 0 keys"), and a naive deep-equal recurses forever on a cycle.
+`deepdeepequal` threads a `seen` map of `(a, b)` pairs already being
+compared on the current path, so a cycle that lines up on both sides is
+treated as equal instead of overflowing the stack — see
+[`assertions/deepdeepequal.mjs`](assertions/deepdeepequal.mjs).
 
-```javascript
-import TestError from "./testerror.mjs";
-
-const assertion = (/*given conditions*/, message, operatorString)=>{
-  if(/*conditions are met*/){
-    return message;
-  }
-  return new TestError(message, /*some object*/));
-}
-```
+Run `node examples/03-deepdeepequal.mjs` to see it work for real, or
+`npm run examples` for the full set.
 
 ### TestError API
 
 The test error is constructed with two items:
 
-- An expected messages
-- An object whose key-value pairs are displayed as part of TAP output
+- An expected message.
+- An object whose key-value pairs are displayed as part of TAP output.
 
 ## TAPRunner, print, run
 

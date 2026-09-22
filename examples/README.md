@@ -1,4 +1,4 @@
-# Examples
+# tester examples
 
 Runnable, self-checking examples. Each one exits 0 on success and 1 on
 failure, so they double as smoke tests (CI runs them all).
@@ -15,7 +15,7 @@ Or individually:
 node examples/01-assertions-return-results-never-throw.mjs
 ```
 
-| Example | Shows |
+| Example | Demonstrates |
 | --- | --- |
 | [01-assertions-return-results-never-throw.mjs](./01-assertions-return-results-never-throw.mjs) | The core assertions (`ok`, `equal`, `deepequal`, `throws`, ...), `plan()`, and the TAP output a test produces. |
 | [02-subtests.mjs](./02-subtests.mjs) | `subtestpass` / `subtestfail` — asserting on the outcome of a nested test, including using `subtestfail` to verify that bad input is rejected. |
