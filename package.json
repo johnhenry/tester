@@ -1,6 +1,6 @@
 {
   "name": "@johnhenry/tester",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A context-independent, zero-dependency TAP testing framework inspired by tape. Runs unchanged in Node, Deno, and the browser.",
   "main": "./index.mjs",
   "homepage": "https://opensource.johnhenry.me/tester/",
@@ -9,25 +9,45 @@
     "node": ">=26.0.0"
   },
   "exports": {
-    ".": "./index.mjs",
-    "./TAPRunner": "./TAPRunner.mjs",
-    "./assertions": "./assertions/index.mjs",
-    "./unique": "./unique/index.mjs",
-    "./testerror": "./testerror.mjs"
+    ".": {
+      "types": "./index.d.mts",
+      "default": "./index.mjs"
+    },
+    "./TAPRunner": {
+      "types": "./TAPRunner.d.mts",
+      "default": "./TAPRunner.mjs"
+    },
+    "./assertions": {
+      "types": "./assertions/index.d.mts",
+      "default": "./assertions/index.mjs"
+    },
+    "./unique": {
+      "types": "./unique/index.d.mts",
+      "default": "./unique/index.mjs"
+    },
+    "./testerror": {
+      "types": "./testerror.d.mts",
+      "default": "./testerror.mjs"
+    }
   },
+  "types": "./index.d.mts",
   "files": [
     "index.mjs",
+    "index.d.mts",
     "TAPRunner.mjs",
+    "TAPRunner.d.mts",
     "assertions",
     "unique",
-    "testerror.mjs"
+    "testerror.mjs",
+    "testerror.d.mts"
   ],
   "directories": {
     "test": "tests"
   },
   "scripts": {
     "test": "node tester.test.mjs",
-    "examples": "for f in examples/*.mjs; do echo \"== $f\"; node \"$f\" || exit 1; done"
+    "examples": "for f in examples/*.mjs; do echo \"== $f\"; node \"$f\" || exit 1; done",
+    "typecheck": "tsc -p tests/types/tsconfig.json"
   },
   "keywords": [
     "test",
@@ -42,5 +62,8 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/johnhenry/tester.git"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2"
   }
 }
