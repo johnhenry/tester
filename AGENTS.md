@@ -14,17 +14,37 @@ browser. Single package, Node >= 26, `node tester.test.mjs` runs the suite
    `tests/` (`assertions.mjs`, `run.mjs`, `deep.mjs`, `tap-format.mjs`).
 2. `npm run examples` — every file in `examples/*.mjs` is self-checking and
    exits non-zero on failure; CI runs the same command.
-3. `npm pack --dry-run` — confirm `files` (`index.mjs`, `TAPRunner.mjs`,
-   `assertions`, `unique`, `testerror.mjs`) still matches what actually
-   ships; there is no build step to catch a missing entry for you.
-4. A genuinely fresh clone:
+3. `npm run typecheck` — `tsc -p tests/types/tsconfig.json` typechecks
+   `tests/types/consumer.ts`, a fixture that imports `@johnhenry/tester`
+   and every subpath by published name and exercises real signatures.
+   Guards the hand-written `.d.mts` declaration files (one per `exports`
+   subpath, `types` condition first) against drifting from the `.mjs`
+   source they describe.
+4. `npm pack --dry-run` — confirm `files` (`index.mjs`, `index.d.mts`,
+   `TAPRunner.mjs`, `TAPRunner.d.mts`, `assertions`, `unique`,
+   `testerror.mjs`, `testerror.d.mts`) still matches what actually ships;
+   there is no build step to catch a missing entry for you.
+5. A genuinely fresh clone:
    `git clone . /tmp/tester-verifyN && cd $_ && npm ci && npm test`.
-5. Commit, push, close the issue with a comment naming the commit SHA.
+6. Commit, push, close the issue with a comment naming the commit SHA.
 
 CI (`.github/workflows/test.yaml`) runs `npm test` then the examples smoke
 step; match that order locally.
 
 ## Repo-specific gotchas
+
+- **Hand-written `.d.mts` files, no build step to generate them.** Every
+  `exports` subpath has a `types` condition (listed first, per TypeScript's
+  own recommendation) pointing at a sibling `.d.mts` — matching extension
+  matters: under `moduleResolution: "nodenext"`, a plain `.d.ts` companion
+  for an `.mjs` file is invisible to relative/self-referencing imports, so
+  it silently degrades every import to `any` instead of erroring. If you
+  add or change a public signature in `index.mjs`, `TAPRunner.mjs`,
+  `assertions/*.mjs`, `unique/index.mjs`, or `testerror.mjs`, update the
+  matching `.d.mts` by hand and re-run `npm run typecheck` — nothing else
+  will catch drift between them. `typescript` is a devDependency only
+  (never add it to `files`); the zero-runtime-dependency pitch below is
+  about what ships, not what's needed to develop.
 
 - **Zero dependencies is the point, not an accident.** The pitch is
   "context-independent" — runs unchanged in Node, Deno, and a browser

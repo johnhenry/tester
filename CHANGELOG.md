@@ -19,6 +19,24 @@ remain on npm for existing consumers.
   also run in CI.
 - This changelog.
 
+## [0.0.1] - 2026-09-26
+
+### Added
+
+- Hand-written TypeScript declarations (`.d.mts`) for every `exports`
+  subpath (`.`, `./TAPRunner`, `./assertions`, `./unique`, `./testerror`),
+  with a `types` condition added ahead of `default` in each. Previously no
+  subpath shipped any declarations, so every import required
+  `@ts-expect-error` ([#12](https://github.com/johnhenry/tester/issues/12)).
+- `npm run typecheck` — typechecks a new fixture
+  (`tests/types/consumer.ts`) that imports the package by its published
+  name and every subpath, exercising real assertion signatures,
+  `TAPRunner.run`/`print`, `unique`, and `TestError`, as a regression test
+  for the declarations above.
+- A "TypeScript" section in the README documenting the new type support.
+- `typescript` as a devDependency (dev-only — not published; the shipped
+  runtime files remain zero-dependency).
+
 ## [0.0.0] - 2026-08-25
 
 First release as `@johnhenry/tester` (third npm address; see provenance

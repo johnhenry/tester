@@ -6,7 +6,7 @@
 
 Full documentation: [opensource.johnhenry.me/tester](https://opensource.johnhenry.me/tester/)
 
-`@johnhenry/tester@0.0.0`
+`@johnhenry/tester@0.0.1`
 
 A context-independent testing framework inspired by [tape](https://github.com/substack/tape).
 
@@ -55,8 +55,15 @@ or
 import directly from website:
 
 ```javascript
-import quiz from "https://cdn.jsdelivr.net/npm/@johnhenry/tester@0.0.0/index.mjs";
+import quiz from "https://cdn.jsdelivr.net/npm/@johnhenry/tester@0.0.1/index.mjs";
 ```
+
+## TypeScript
+
+Type declarations ship for every subpath (`.`, `./TAPRunner`, `./assertions`,
+`./unique`, `./testerror`) — no `@ts-expect-error` needed on import. Each
+assertion is typed as returning `string | TestError`; narrow on
+`instanceof TestError` to read its diagnostic fields.
 
 ## Examples
 
